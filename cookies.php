@@ -1,35 +1,15 @@
 <?php session_start(); // sessioninit skal ske som noget af det f�rste i dokumentet 
 ?>
 <?php
-if (!function_exists("GetSQLValueString")) {
-function GetSQLValueString($theValue, $theType, $theDefinedValue = "", $theNotDefinedValue = "") 
-{
-  $theValue = get_magic_quotes_gpc() ? stripslashes($theValue) : $theValue;
-
-  $theValue = function_exists("mysql_real_escape_string") ? mysql_real_escape_string($theValue) : mysql_escape_string($theValue);
-
-  switch ($theType) {
-    case "text":
-      $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
-      break;    
-    case "long":
-    case "int":
-      $theValue = ($theValue != "") ? intval($theValue) : "NULL";
-      break;
-    case "double":
-      $theValue = ($theValue != "") ? "'" . doubleval($theValue) . "'" : "NULL";
-      break;
-    case "date":
-      $theValue = ($theValue != "") ? "'" . $theValue . "'" : "NULL";
-      break;
-    case "defined":
-      $theValue = ($theValue != "") ? $theDefinedValue : $theNotDefinedValue;
-      break;
-  }
-  return $theValue;
+if ($_POST['cookie_accept']) {
+    $duree = 3600; //will expire in seconds 60*60*24*30 month
+    setcookie('bplac', 1, time()+intval($duree));
+    header("Location: ".$_SERVER['PHP_SELF']); //redirect to self
 }
+if ($_POST['cookie_deny']) {
+    setcookie('bplac', 0, time()-3600); //expired one hour ago
+    header("Location: ".$_SERVER['PHP_SELF']); //redirect to self    
 }
- 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -74,18 +54,35 @@ function MM_swapImage() { //v3.0
   </tr>
   <tr>
     <td width="150" align="center" valign="top" id="leftmenu"><?php include("menu.inc.php"); ?></td>
-    <td align="center" valign="middle"><h2>Gle&eth;ilega  p&aacute;ska!</h2>
-    <p>Cookie disclaimer!</p>
-    <p><img src="pics/bjork_looking_down_purple.jpg" alt="Bj&ouml;rk looking down" width="300" height="400" /></p>
+    <td align="center" valign="middle">
+    <?php echo holidays() ?>
+    <h3>Cookie disclaimer!</h3>
     <p>If you accept cookies, your session settings will be saved in your present browser.</p>
     <p>Only these settings will be stored, no tracking or spying will take place, and no personal data will be stored.</p>
     <p>You can at any time retrieve your cookie acceptance and thereby delete all stored information.</p>
-    <div id="mo_cookies_accept">
-  <form id="cookie_accept_form" name="cookie_accept_form" method="post" action="">
-	<input name="cookie_accept" type="checkbox" value="" />
-	<input name="cookie_accept_submit" type="submit" value="Yes, I accept!" />
-  </form>
-    </div>
+    <?php 
+    if ($_COOKIE['bplac']) {
+        ?>
+        <p>You seem to accept cookies on this site at this point!</p>
+        <div id="mo_cookies_deny">
+          <form id="cookie_deny_form" name="cookie_deny_form" method="post" action="<?php $_SERVER['PHP_SELF']; ?>">
+            <input name="cookie_deny" type="hidden" value="1" />
+            <input name="cookie_deny_submit" type="submit" value="I have changed my mind, please revoke my acceptance!" />
+          </form>
+        </div>
+        <?php
+    } else {
+        ?>
+        <div id="mo_cookies_accept">
+          <form id="cookie_accept_form" name="cookie_accept_form" method="post" action="<?php $_SERVER['PHP_SELF']; ?>">
+            <input name="cookie_accept" type="checkbox" value="1" />
+            <input name="cookie_accept_submit" type="submit" value="Yes, I accept!" />
+          </form>
+        </div>
+        <?php        
+    }
+    ?>
+    <p>Cookies: <span style="font-family: monospace;"><?php print_r($_COOKIE); ?></span></p>
   </tr>
 </table>
 
