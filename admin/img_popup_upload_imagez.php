@@ -56,6 +56,9 @@ if (isset($_POST['upload'])) {
 		  die("Desv&aelig;rre - filen er for stor. Jeg accepterer kun " . 
 			   $konfiguration["max_stoerrelse"] . "kb, og din fil fylder " . 
 			   ceil($fil_stoerrelse) . "kb");
+		  $toobig = true;
+	  } else {
+		  $toobig = false;
 	  }
 	  
 	  if(function_exists("move_uploaded_file")) {
@@ -64,21 +67,30 @@ if (isset($_POST['upload'])) {
 		copy($fra, $til);
 	  }
 	  $message = "File uploaded: <b>".$_FILES["upfil"]["name"]."</b>";	
+	  $upf = true;
+	  //$_SESSION['latest_image'] = $_FILES["upfil"]["name"];	//save latest upload for later
+	  if (!in_array($_FILES['upfil']['name'],$_SESSION['latest_imagez_arr'])) {
+	  	$_SESSION['latest_imagez_arr'][] = $_FILES["upfil"]["name"];	//save latest upload for later
+	  }
+	  
 	} else {
       $message = "No files uploaded"."&alert=true";
 	  if (!$allowedimagefile) {
       	$message = "No files uploaded: File type not allowed"."&alert=true"; //
 	  }
+	  $upf = false;
 	}
-	header("Location: " . $_SERVER["PHP_SELF"] . "?ret=" . $_POST['ret'] . "&message=" . $message );
+	header("Location: " . $_SERVER["PHP_SELF"] . "?ret=" . $_POST['ret'] . "&message=" . $message . "&upf=" . $upf );
 	exit;	
 }
 
 if (substr(strtolower($_GET['val']),0,4)=="http") { $remote_file = true; } else { $remote_file = false; }
 
 ?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+	"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <html>
 <head>
 	<title>Indhold af biblioteket <?php echo $folder ?></title>
@@ -151,7 +163,22 @@ body {
 		echo "\">".$_GET['message']."</p>"; 
 	} else { ?>
 	<p class="xsmall">Select or upload file to select:</p>
-	<?php } ?>
+	<?php } 
+		if (isset($_SESSION['latest_imagez_arr'])) {
+			$img_latest = array_reverse(array_unique($_SESSION['latest_imagez_arr']));
+			echo "<p class=\"xsmall\">Recent upload";
+			if (count($img_latest) > 1) { 
+				echo "s"; 
+			}
+			echo ": "; 
+			foreach ($img_latest as $key => $value) {
+				echo "<a href=\"#\" onClick=\"self.opener.document.".$_GET['ret'].".value='".$value."';window.close();\" >".$value."</a>&nbsp;";
+			}
+			echo "</p>"; 
+			echo "<p class=\"xsmall\" id=\"reset_latest_imagez_message\"><a href=\"#\" id=\"reset_latest_imagez_link\">Reset</a></p>";
+		}
+	?>
+	<!--
 	<table width="770" border="0" cellspacing="0" cellpadding="2" class="xxsmall">
 	  <tr>
 		<td class="pic_num">number</td>
@@ -163,7 +190,8 @@ body {
 		<td class="pic_sta">timestamp</td>
 	  </tr>
 	</table>
-	<div id="filelist_container">
+	-->
+	<div id="filelist_container" class="filelist_imagez">
 
 	</div>
 		<!--<p class="xsmall">Billeder sorteres og vises alfanumerisk p&aring; siden. </p> --><!-- det g�r de ikke f�r arrayet sorteres inden tabellen genereres -->

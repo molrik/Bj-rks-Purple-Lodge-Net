@@ -173,7 +173,6 @@ body {
 			}
 			echo "</p>";
 			echo "<p class=\"xsmall\" id=\"reset_latest_thumbz_message\"><a href=\"#\" id=\"reset_latest_thumbz_link\">Reset</a></p>";
-			 
 		}
 	?>
 	<div id="filelist_container" class="filelist_thumbz">

@@ -82,7 +82,10 @@ function MM_swapImage() { //v3.0
         <?php        
     }
     ?>
-    <p>Cookies: <span style="font-family: monospace;"><?php print_r($_COOKIE); ?></span></p>
+    <?php if (isset($_SESSION['user'])) { ?>
+    <p>Cookies: <span style="font-family: monospace;color:#F00;"><?php print_r($_COOKIE); ?></span></p>
+    <p>Session: <span style="font-family: monospace;color:#00F;"><?php print_r($_SESSION); ?></span></p>
+    <?php } ?>
   </tr>
 </table>
 

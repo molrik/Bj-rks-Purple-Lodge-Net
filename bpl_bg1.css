@@ -1,0 +1,12 @@
+body {
+	background-image: url(syspics/left2.jpg);
+	background-repeat: repeat-y;
+}
+#leftcorner {
+	background-image: url(syspics/corner2.jpg);
+	background-repeat: no-repeat;
+}
+#topmenu {
+	background-image: url(syspics/top2.jpg);
+	background-repeat: repeat-x;
+}

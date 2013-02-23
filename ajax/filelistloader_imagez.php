@@ -11,7 +11,7 @@ function chk_pic($pic_db) {	//modificeret udgave af den i common.inc.php
 		$th_path = "../thumbnails/th_".$pic_db;
 		if (file_exists($pic_path)) {
 			$pic_inf = @getimagesize($pic_path);
-			$pic_mod = "<td class=\"pic_sel\"><a class=\"thumbnail\" href=\"#\" onClick=\"self.opener.document.".$_GET['ret'].".value='".$pic_db."';window.close();\" >";
+			$pic_mod = "<td class=\"pic_sel\"><a class=\"thumbnail\" href=\"#\" onClick=\"self.opener.document.upd_rel_img.image_input.value='".$pic_db."';window.close();\" >";
 			$pic_mod .= $pic_db;
 			if (file_exists($th_path)) $pic_mod .= "<span><img src=\"".$th_path."\" /></span>";
 			$pic_mod .= "</a></td>";
@@ -28,16 +28,16 @@ function chk_pic($pic_db) {	//modificeret udgave af den i common.inc.php
 function listFiler($bibliotek) {
 
   if($bib = @opendir($bibliotek)) {
-    /** 
-     * Denne syntaks er forklaret i PHP-manualen:
-     * http://www.php.net/manual/en/function.readdir.php
-     */
+	$time_start = microtime(true);
     while (false !== ($fil = readdir($bib))) {
       if($fil != "." && $fil != ".." && !ereg("^\..+", $fil) && !ereg("^_", $fil) && ereg("\.+", $fil)) {
           $fil_liste[] = chk_pic($fil);
-		  $succes = sort($fil_liste);
+		  //$succes = sort($fil_liste);
       }
     }
+	$succes = sort($fil_liste);
+	$time_end = microtime(true);
+	$time = $time_end - $time_start;
     closedir($bib);
 
  	//each-version  
@@ -54,7 +54,7 @@ function listFiler($bibliotek) {
     } else {
       	$liste = "Ingen filer i biblioteket";
     }
-    return "" . $liste . "";
+    return $liste."<p class=\"xsmall\">Time: ".$time." seconds</p>";
   } else {
     die("Kunne ikke &aring;bne biblioteket: " . $bibliotek);
   }
