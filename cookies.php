@@ -2,7 +2,7 @@
 ?>
 <?php
 if ($_POST['cookie_accept']) {
-    $duree = 3600; //will expire in seconds 60*60*24*30 month
+    $duree = 2592000; //will expire in seconds 60*60*24*30 month
     setcookie('bplac', 1, time()+intval($duree));
     header("Location: ".$_SERVER['PHP_SELF']); //redirect to self
 }
@@ -80,6 +80,21 @@ function MM_swapImage() { //v3.0
           </form>
         </div>
         <?php        
+    }
+    if ($_COOKIE['bplac']) {    //hvis cookies appepteres
+        if (isset($_COOKIE['bpl'])) {   //hvis cookiesettings
+            echo "<br /><div id=\"current_cookie_settings\">";
+            echo "<strong>Current cookie settings:</strong>";
+            echo "<form id=\"cookie_settings_form\" name=\"cookie_settings_form\" method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">";
+            echo "<label for=\"promostatus\">Exclude promos and testpressings</label>";
+            echo "<input id=\"promostatus\" name=\"promostatus\" type=\"checkbox\" value=\"1\" ";
+            if ($_COOKIE['bpl']['exclude_promos']) {
+                echo "checked=\"checked\" ";
+            };
+            echo "/>";
+            echo "</form>";
+            echo "</div>";
+        }
     }
     ?>
     <?php if (isset($_SESSION['user'])) { ?>

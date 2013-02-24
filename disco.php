@@ -1,5 +1,23 @@
 <?php 
 session_start(); // sessioninit skal ske som noget af det f�rste i dokumentet 
+if ($_COOKIE['bplac']) {    //hvis cookies appepteres
+    if (isset($_COOKIE['bpl'])) {   //hvis cookiesettings
+        $_SESSION['exclude_promos'] = $_COOKIE['bpl']['exclude_promos'];    //hent promostatus ind i sessionvar
+    }
+}
+/* med eller uden promos */
+if (isset($_GET['pro'])) {
+    if (intval(trim($_GET['pro']))) {   //pro=1
+        $_SESSION['exclude_promos'] = 0;
+    } else {    //pro=0
+        $_SESSION['exclude_promos'] = 1;
+    }
+}
+if (($_COOKIE['bplac']) && (isset($_SESSION['exclude_promos']))) {  //hvis cookies accepteres og sessions er sat
+    $duree = 2592000; //will expire in seconds 60*60*24*30 = 1 month
+    $bplexpr = $_SESSION['exclude_promos'];
+    setcookie('bpl[exclude_promos]', $bplexpr, time()+$duree);    //gem i cookie
+}
 ?>
 <?php require_once('../Connections/db_purplelodge_net.php'); ?>
 <?php
@@ -40,14 +58,6 @@ $updateGoTo .= (strpos($updateGoTo, '?')) ? "&" : "?";
 $updateGoTo .= $_SERVER['QUERY_STRING'];
 }
 
-/* med eller uden promos */
-if (isset($_GET['pro'])) {
-	if (intval(trim($_GET['pro']))) {	//pro=1
-		$_SESSION['exclude_promos'] = 0;
-	} else {	//pro=0
-		$_SESSION['exclude_promos'] = 1;
-	}
-}
 /* Valg af udv�lgelsesmetode og databaseconnections */
 if (!isset($_GET['year']) && !isset($_GET['letter']) && !isset($_GET['rid']) && !isset($_GET['title']) && !isset($_GET['artist'])) {
 	$selrel = "1=0"; 
