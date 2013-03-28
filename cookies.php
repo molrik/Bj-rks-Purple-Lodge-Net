@@ -93,7 +93,8 @@ function MM_swapImage() { //v3.0
         <?php        
     }
     if ($_COOKIE['bplac']) {    //hvis cookies appepteres
-        if (isset($_COOKIE['bpl'])) {   //hvis cookiesettings
+        //if (isset($_COOKIE['bpl'])) {   //hvis cookiesettings
+        if (1) {
             echo "<br /><div id=\"current_cookie_settings\">";
             echo "<strong>Current cookie settings:</strong>";
             echo "<form id=\"cookie_settings_form\" name=\"cookie_settings_form\" method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">";

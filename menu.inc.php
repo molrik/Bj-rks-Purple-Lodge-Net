@@ -9,8 +9,8 @@
 <p><a href="http://purplelodge.net/bpl/" title="Bj&ouml;rks Purple Lodge - the old site" target="_blank">Once upon a time...</a></p>
 <?php if (isset($_SESSION['user'])) { ?>
 <p><a href="admin/index_test.php" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage('corner','','syspics/molrik.gif',1)" title="Administration">Admin</a></p>
-<p><a href="cookies.php" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage('corner','','syspics/molrik.gif',1)" title="Cookies">Sweet intuition</a></p>
 <?php } ?>
+<p><a href="cookies.php" onmouseout="MM_swapImgRestore()" onmouseover="MM_swapImage('corner','','syspics/molrik.gif',1)" title="Cookies">Sweet intuition</a></p>
 <?php include("includes/common.inc.php"); ?>
 <script type="text/javascript" src="includes/jquery-1.7.2.min.js"></script>
 <script type="text/javascript" src="includes/common.inc.js"></script>
