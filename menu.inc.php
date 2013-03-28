@@ -16,3 +16,10 @@
 <script type="text/javascript" src="includes/common.inc.js"></script>
 <script type="text/javascript" src="includes/window_fe.js"></script>
 <script type="text/javascript" src="includes/mainjq.js"></script>
+<?php 
+if ($_SESSION['popup_lightbox']) {
+?>
+<script type="text/javascript" src="includes/slimbox2.js"></script>
+<?php    
+}
+?>

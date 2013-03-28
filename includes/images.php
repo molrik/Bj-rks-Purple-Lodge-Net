@@ -22,7 +22,7 @@ if ($tr_thumb!="") {							//hvis thumb i db
 			} else {
 				$linktype = 0;					//intet link
 			}
-		} else {								//ellers betragtes den som værende remote
+		} else {								//ellers betragtes den som vï¿½rende remote
 			$image = $tr_image;					//hele stien rummes i db
 			$linktype = 2;						//remote link
 		}
@@ -30,43 +30,56 @@ if ($tr_thumb!="") {							//hvis thumb i db
 		$linktype = 0;							//intet link
 	}
 	
+    /* Thumbnail */
+    if ($thumb_present) {                               //sammensï¿½t acronym/alttext/title
+        $alt_title =    $row_img['descr']." - ";        //beskrivelsen pï¿½ image-db
+        $alt_title .=   $row_releases['title']." - ";   //Udgivelsestitel
+        $alt_title .=   $row_releases['artist']." - ";  //Kunstner
+        $alt_title .=   $row_releases['media']." - ";   //Medie
+        $alt_title .=   $row_releases['label']." - ";   //Pladeselskab
+        $alt_title .=   $row_releases['serial']." (";   //Udgivelsesnummer
+        $alt_title .=   $row_releases['country'].")";   //Fï¿½rst udgivet i
+    } else {
+        $alt_title =    "Thumbnail missing";            //I tilfï¿½lde af manglende thumbnail
+    }  
+    
 	/* Rendering af output */
 	if ($linktype) {							//hvis link - anchor begin
 		switch($linktype) {
 			case 1:								//lokal link
-				$pic_inf = getimagesize($image);
-				$pic_w = $pic_inf[0];
-				$pic_h = $pic_inf[1];
-				echo "<a href=\"javascript:open_picwin_fe('".$image."',".$pic_w.",".$pic_h.");\">";				
+			    if ($_SESSION['popup_lightbox']) {
+			        //lightbox
+			        echo "<a href=\"".$image."\" rel=\"lightbox-r".$row_releases['id']." \" class=\"lightboximagelink\" title=\"".$alt_title."\">";
+                } else {
+                    //standard popup
+    				$pic_inf = getimagesize($image);
+    				$pic_w = $pic_inf[0];
+    				$pic_h = $pic_inf[1];
+    				echo "<a href=\"javascript:open_picwin_fe('".$image."',".$pic_w.",".$pic_h.");\" class=\"popupimagelink popup-r".$row_releases['id']."\" >";				
+                }
 				break;
 			case 2:								//remote link
-				$pic_w = 502;					//default vindues-bredde	
-				$pic_h = 525;					//default vindues-højde
-				echo "<a href=\"javascript:open_picwin_remote_fe('".$image."',".$pic_w.",".$pic_h.");\">";
+			    if ($_SESSION['popup_lightbox']) {
+                    //lightbox
+                    echo "<a href=\"".$image."\" rel=\"lightbox-r".$row_releases['id']." \" class=\"lightboximagelinkremote\" title=\"Remote @ unit.bjork.com: ".$alt_title."\">";
+                } else {		
+    				$pic_w = 502;					//default vindues-bredde	
+    				$pic_h = 525;					//default vindues-hï¿½jde
+    				echo "<a href=\"javascript:open_picwin_remote_fe('".$image."',".$pic_w.",".$pic_h.");\">";
+				}
 				break;
 			default:
-				echo "<a href=\"#\">";			//bare i tilfælde af fejl
+				echo "<a href=\"#\">";			//bare i tilfï¿½lde af fejl
 				break;
 		}
 	}
 	
-	/* Thumbnail */
-	if ($thumb_present) {								//sammensæt acronym/alttext/title
-		$alt_title = 	$row_img['descr']." - ";		//beskrivelsen på image-db
-		$alt_title .= 	$row_releases['title']." - ";	//Udgivelsestitel
-		$alt_title .= 	$row_releases['artist']." - ";	//Kunstner
-		$alt_title .= 	$row_releases['media']." - ";	//Medie
-		$alt_title .=	$row_releases['label']." - ";	//Pladeselskab
-		$alt_title .=	$row_releases['serial']." (";	//Udgivelsesnummer
-		$alt_title .=	$row_releases['country'].")";	//Først udgivet i
-	} else {
-		$alt_title = 	"Thumbnail missing";			//I tilfælde af manglende thumbnail
-	}
+	/* Thumbnail - var her, men er nu flyttet op over rendering */
 	
 	$image_code = 		"<img "; 						//Billedtag
 	$image_code .= 		"src=\"".$thumb."\" "; 			//Kilde
 	$image_code .= 		"width=\"".$imgdim[0]."\" "; 	//Bredde
-	$image_code .= 		"height=\"".$imgdim[1]."\" "; 	//Højde
+	$image_code .= 		"height=\"".$imgdim[1]."\" "; 	//Hï¿½jde
 	$image_code .= 		"border=\"1\" "; 				//Kant
 	$image_code .= 		"alt=\"".$alt_title."\" "; 		//Tekst hvis kilde mangler
 	$image_code .= 		"title=\"".$alt_title."\" />"; 	//Titel-tekst

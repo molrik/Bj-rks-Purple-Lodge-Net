@@ -1,13 +1,24 @@
 <?php session_start(); // sessioninit skal ske som noget af det f�rste i dokumentet 
 ?>
 <?php
-if ($_POST['cookie_accept']) {
     $duree = 2592000; //will expire in seconds 60*60*24*30 month
+if ($_POST['cookie_accept']) {
     setcookie('bplac', 1, time()+intval($duree));
     header("Location: ".$_SERVER['PHP_SELF']); //redirect to self
 }
 if ($_POST['cookie_deny']) {
     setcookie('bplac', 0, time()-3600); //expired one hour ago
+    header("Location: ".$_SERVER['PHP_SELF']); //redirect to self    
+}
+if ($_POST['status_submit']) { //cookie change
+    if (intval($_POST['promostatus'])) { //promos
+        setcookie('bpl[exclude_promos]', 1, time()+$duree);    //gem i cookie
+    } else {
+        setcookie('bpl[exclude_promos]', 0, time()+$duree);    //gem i cookie        
+    }
+    //lightbox?
+    setcookie('bpl[popup_lightbox]', intval($_POST['popupstatus']), time()+$duree);    //gem i cookie
+    
     header("Location: ".$_SERVER['PHP_SELF']); //redirect to self    
 }
 ?>
@@ -92,6 +103,14 @@ function MM_swapImage() { //v3.0
                 echo "checked=\"checked\" ";
             };
             echo "/>";
+            echo "<br /><label for=\"popupstatus\">Popup images in lightbox</label>";
+            echo "<input id=\"popupstatus\" name=\"popupstatus\" type=\"checkbox\" value=\"1\" ";
+            if ($_COOKIE['bpl']['popup_lightbox']) {
+                echo "checked=\"checked\" ";
+            };
+            echo "/>";
+            echo "<br /><input id=\"status_submit\" name=\"status_submit\" type=\"submit\" value=\"Set\" />";
+            
             echo "</form>";
             echo "</div>";
         }

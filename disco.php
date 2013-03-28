@@ -3,6 +3,7 @@ session_start(); // sessioninit skal ske som noget af det f�rste i dokumentet
 if ($_COOKIE['bplac']) {    //hvis cookies appepteres
     if (isset($_COOKIE['bpl'])) {   //hvis cookiesettings
         $_SESSION['exclude_promos'] = $_COOKIE['bpl']['exclude_promos'];    //hent promostatus ind i sessionvar
+        $_SESSION['popup_lightbox'] = $_COOKIE['bpl']['popup_lightbox'];    //ditto
     }
 }
 /* med eller uden promos */
@@ -146,6 +147,13 @@ function MM_swapImage() { //v3.0
 </script>
 <link href="bpl.css" rel="stylesheet" type="text/css" />
 <link href="bpl_bg1.css" rel="stylesheet" type="text/css" />
+<?php 
+if ($_SESSION['popup_lightbox']) {
+?>
+<link href="bpl_slimbox2.css" rel="stylesheet" type="text/css" />
+<?php    
+}
+?>
 </head>
 
 <body onload="MM_preloadImages('molrik.gif','taatoo.gif','umurna2.gif','cubes.gif','bjorkb.gif','eye8.gif','bear.gif','morepics.gif')">
