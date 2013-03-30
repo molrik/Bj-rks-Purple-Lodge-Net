@@ -1,5 +1,24 @@
 <?php 
-session_start(); // sessioninit skal ske som noget af det første i dokumentet 
+session_start(); // sessioninit skal ske som noget af det fï¿½rste i dokumentet 
+if ($_COOKIE['bplac']) {    //hvis cookies appepteres
+    if (isset($_COOKIE['bpl'])) {   //hvis cookiesettings
+        $_SESSION['exclude_promos'] = $_COOKIE['bpl']['exclude_promos'];    //hent promostatus ind i sessionvar
+        $_SESSION['popup_lightbox'] = $_COOKIE['bpl']['popup_lightbox'];    //ditto
+    }
+}
+/* med eller uden promos */
+if (isset($_GET['pro'])) {
+    if (intval(trim($_GET['pro']))) {   //pro=1
+        $_SESSION['exclude_promos'] = 0;
+    } else {    //pro=0
+        $_SESSION['exclude_promos'] = 1;
+    }
+}
+if (($_COOKIE['bplac']) && (isset($_SESSION['exclude_promos']))) {  //hvis cookies accepteres og sessions er sat
+    $duree = 2592000; //will expire in seconds 60*60*24*30 = 1 month
+    $bplexpr = $_SESSION['exclude_promos'];
+    setcookie('bpl[exclude_promos]', $bplexpr, time()+$duree);    //gem i cookie
+}
 ?>
 <?php require_once('../Connections/db_purplelodge_net.php'); ?>
 <?php
@@ -40,15 +59,7 @@ $updateGoTo .= (strpos($updateGoTo, '?')) ? "&" : "?";
 $updateGoTo .= $_SERVER['QUERY_STRING'];
 }
 
-/* med eller uden promos */
-if (isset($_GET['pro'])) {
-	if (intval(trim($_GET['pro']))) {	//pro=1
-		$_SESSION['exclude_promos'] = 0;
-	} else {	//pro=0
-		$_SESSION['exclude_promos'] = 1;
-	}
-}
-/* Valg af udvælgelsesmetode og databaseconnections */
+/* Valg af udvï¿½lgelsesmetode og databaseconnections */
 if (!isset($_GET['year']) && !isset($_GET['letter']) && !isset($_GET['rid']) && !isset($_GET['title']) && !isset($_GET['artist'])) {
 	$selrel = "1=0"; 
 	$footer_message = "";
@@ -64,7 +75,7 @@ if (isset($_GET['letter']))	{
 	$seltyp = "letter";
 }
 if (isset($_GET['title'])) { 
-	$selrel = "title LIKE '".$_GET['title']."'";  //selecting title
+	$selrel = "title LIKE '".addslashes($_GET['title'])."'";  //selecting title
 	$seltyp = "title";
 }
 if (isset($_GET['rid'])) { 
@@ -72,7 +83,7 @@ if (isset($_GET['rid'])) {
 	$seltyp = "id";
 }
 if (isset($_GET['artist'])) { 
-	$selrel = "artist LIKE '".$_GET['artist']."'";  //selecting by artist
+	$selrel = "artist LIKE '".addslashes($_GET['artist'])."'";  //selecting by artist
 	$seltyp = "artist";
 }
 // vis kun test-udgivelser frem hvis admin er logget ind
@@ -89,13 +100,13 @@ $releases = mysql_query($query_releases, $db_purplelodge_net) or die(mysql_error
 $row_releases = mysql_fetch_assoc($releases);
 $totalRows_releases = mysql_num_rows($releases);
 
-mysql_select_db($database_db_purplelodge_net, $db_purplelodge_net); //indsaml tilgængelige årstal (til headermenuen)
+mysql_select_db($database_db_purplelodge_net, $db_purplelodge_net); //indsaml tilgï¿½ngelige ï¿½rstal (til headermenuen)
 $query_relyear = "SELECT DISTINCT year(reldate) AS reldate FROM bpl_rel WHERE ".$relstat." ORDER BY year(reldate) ASC";
 $relyear = mysql_query($query_relyear, $db_purplelodge_net) or die(mysql_error());
 $row_relyear = mysql_fetch_assoc($relyear);
 $totalRows_relyear = mysql_num_rows($relyear);
 
-mysql_select_db($database_db_purplelodge_net, $db_purplelodge_net);	//indsaml tilgængelige for-bogstaver (til headermenuen)
+mysql_select_db($database_db_purplelodge_net, $db_purplelodge_net);	//indsaml tilgï¿½ngelige for-bogstaver (til headermenuen)
 $query_relletter = "SELECT DISTINCT UCASE(LEFT(title,1)) AS letter FROM bpl_rel WHERE ".$relstat." ORDER BY bpl_rel.title";
 $relletter = mysql_query($query_relletter, $db_purplelodge_net) or die(mysql_error());
 $row_relletter = mysql_fetch_assoc($relletter);
@@ -134,11 +145,15 @@ function MM_swapImage() { //v3.0
 }
 //-->
 </script>
-
 <link href="bpl.css" rel="stylesheet" type="text/css" />
 <link href="bpl_bg1.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" src="includes/jquery-1.7.2.min.js"></script>
-<script type="text/javascript" src="includes/mainjq.js"></script>
+<?php 
+if ($_SESSION['popup_lightbox']) {
+?>
+<link href="bpl_slimbox2.css" rel="stylesheet" type="text/css" />
+<?php    
+}
+?>
 </head>
 
 <body onload="MM_preloadImages('molrik.gif','taatoo.gif','umurna2.gif','cubes.gif','bjorkb.gif','eye8.gif','bear.gif','morepics.gif')">
@@ -148,9 +163,9 @@ function MM_swapImage() { //v3.0
 	
     <td height="150" align="center" valign="middle" id="topmenu">
     <a name="sidetop"></a>
-	<h3><a href="<?php echo $_SERVER['PHP_SELF']; ?>">Discography</a></h3>
+	<h3><a href="<?php echo $_SERVER['PHP_SELF']; ?>">Discography test</a></h3>
 	<table><tr><td id="year_row">
-		<!-- Her fremvises alle forekommende årstal med links -->
+		<!-- Her fremvises alle forekommende ï¿½rstal med links -->
       	<?php do { ?>
 			<a href="<?php echo $_SERVER['PHP_SELF']."?year=".$row_relyear['reldate']; ?>"><?php if (isset($_GET['year']) && ($_GET['year']==$row_relyear['reldate'])) { echo "<b>" ; $bend = "</b>"; } else { $bend = ""; } ?><?php echo substr($row_relyear['reldate'],2,2); ?><?php echo $bend; ?></a><?php echo " "; ?>
         <?php } while ($row_relyear = mysql_fetch_assoc($relyear)); ?>
@@ -174,6 +189,7 @@ function MM_swapImage() { //v3.0
 	?>
 	<?php if ($totalRows_releases) { //only if releases found ?>
       <?php do { //once pr found release ?>
+          
       <!-- promos / no promos -->
       <?php if (!(($row_releases['reltype'] != "rel") && ($_SESSION['exclude_promos']))) { ?>
       <?php 
@@ -191,23 +207,17 @@ function MM_swapImage() { //v3.0
 		if ($totalRows_img==0) { $row_img['thumb'] = "thx_def.gif"; } ;
 		?>
 	  <!-- end fetch images  -->
+	  
       <div id="div_<?php echo $r_id ?>" class="rel_div">
-	  <table width="98%" border="0" cellpadding="2" cellspacing="2" class="sides_and_top">
+          
+<!-- relheader begin --> 
+         
+<table width="98%" border="0" cellpadding="0" cellspacing="0" class="sides_and_top relheader-outer"><tr><td valign="top">
+    
+    
+    <table class="relheader-inner" border="0" cellpadding="2" cellspacing="2" width="100%">
+
 		<tr> 
-    <td width="75" height="75" rowspan="2" align="left" valign="top" id="mainpic<?php echo $row_releases['id']; ?>">
-	<table border="0" cellspacing="0" cellpadding="0">
-	  <tr>
-		<td valign="bottom" class="th_holder">
-			<!-- Billedbehandling starter her (enkeltvisning) -->
-			<?php include("includes/images.php"); ?>
-			<!-- Billedbehandling er slut her (enkeltvisning) -->		</td>
-		<?php if ($morepics) { ?>
-		<td valign="bottom" align="left">
-			<a href='javascript:showallpicsjq(<?php echo $row_releases['id']; ?>);' id="showlink<?php echo $row_releases['id']; ?>" class="showlink" ><img src="syspics/morepics_init.gif" alt="morepics.gif" name="morepics<?php echo $row_releases['id']; ?>" width="9" height="10" border="0" id="morepics<?php echo $row_releases['id']; ?>" title="Click here to show additional images" onmouseover="MM_swapImage('morepics<?php echo $row_releases['id']; ?>','','syspics/morepics.gif',1)" onmouseout="MM_swapImgRestore()" /></a>
-			</td>
-		<?php } ?>
-	  </tr>
-	</table>	</td>
     <td colspan="2"><strong><?php echo $row_releases['title']; ?></strong></td>
     <td colspan="2"> 
       <center>
@@ -228,7 +238,7 @@ function MM_swapImage() { //v3.0
   </tr>
   <tr> 
     <td colspan="5"> <ul class="mediainfo">
-        <li class="<?php echo showbullet($row_releases['media']); ?>"><?php echo $row_releases['media']; ?> - 
+        <li class="<?php echo showbullet($row_releases['media']); ?>"><?php echo txt2upper($row_releases['media']); ?> - 
             <?php echo $row_releases['label']; ?> <?php echo $row_releases['serial']; ?> (<?php echo $row_releases['country']; ?>) <?php if (trim($row_releases['case'])!="") echo "<span class=\"xxsmall\">".$row_releases['case']."</span>"; ?> <?php if ($row_releases['mo']) { ?><img src="syspics/th_molrik.gif" alt="This item is in my collection" width="22" height="15" title="This item is in my collection" /><?php } ?></li>
       </ul>	</td>
 <td align="right" valign="bottom">
@@ -236,22 +246,45 @@ function MM_swapImage() { //v3.0
 <a href="admin/index_test.php?act=updrel&amp;id=<?php echo $row_releases['id'] ?>"><img src="syspics/pencil.gif" alt="Edit this release" width="16" height="16" border="0" title="Edit this release" /></a>
 <?php } ?></td>  
 </tr>
-</table>  
-<table width="98%" border="0" cellpadding="2" cellspacing="2" class="sides">
-  <?php if ($morepics) { // Show pictures if there are any more ?>
-  <tr id="picrow<?php echo $row_releases['id']; ?>" style="display:none">
-  <td>
-  <?php do { ?>
+</table>
+<div class="bpl_images" id="rel<?php echo $row_releases['id'] ?>_pics">
+ <?php 
+ $imagecount = 0;   //init
+ do { ?>
+  <div class="<?php if ($imagecount) { echo 'bpl_secondary_images'; } else { echo 'bpl_primary_image'; } ?>" id="rel<?php echo $row_releases['id'] ?>_pic<?php echo $imagecount; ?>">   
   <!-- Billedbehandling starter her (batchvisning) -->
   <?php include("includes/images.php"); ?>
   <!-- Billedbehandling er slut her (batchvisning) -->
-  <?php } while ($row_img = mysql_fetch_assoc($img)); ?>  </td></tr>
+  </div>
+  <?php if (!$imagecount) { ?>
+    <div class="bpl_morepics_holder">
+        <a href="#" id="showlink<?php echo $row_releases['id'] ?>" class="bpl_showmore"><img src="syspics/nopoint.gif" alt="morepics.gif" id="morepics<?php echo $row_releases['id'] ?>" title="Click here to show additional images" border="0" height="10" width="9"></a>      
+    </div>      
+  <?php } ?>
+  <?php 
+ $imagecount++;
+ } while ($row_img = mysql_fetch_assoc($img)); ?>
+</div>
+
+</td></tr></table>
+
+<!-- relheader end --> 
+
+<!-- old morepics row begin -->
+ 
+<table width="98%" border="0" cellpadding="2" cellspacing="2" class="sides">
+  <?php if ($morepics) { // Show pictures if there are any more ?>
+  <tr id="picrow<?php echo $row_releases['id']; ?>" style="display:none">
+  <td>the old row  </td></tr>
   <?php } ?>
 </table>
+
+<!-- old morepics row end -->
+
 	<?php
 	//collect the relevant tracks
 	$r_id = $row_releases['id'];	//noter release-id
-	$query_rel_songs = "SELECT bpl_rel_song.side, bpl_rel_song.track, bpl_song.title, bpl_song.time, bpl_song.comment, bpl_song.alt_title, bpl_song.artist, bpl_song.hl ";	//hvad
+	$query_rel_songs = "SELECT bpl_rel_song.side, bpl_rel_song.track, bpl_song.title, bpl_song.time, bpl_song.comment, bpl_song.alt_title, bpl_song.mix_info, bpl_song.artist, bpl_song.hl ";	//hvad
 	$query_rel_songs .= "FROM bpl_rel_song LEFT JOIN bpl_song ON bpl_rel_song.s_id = bpl_song.id ";	//hvorfra
 	$query_rel_songs .= "WHERE bpl_rel_song.r_id = $r_id ORDER BY track ASC";	//hvordan
 	$rel_songs = mysql_query($query_rel_songs, $db_purplelodge_net) or die(mysql_error());
@@ -260,16 +293,50 @@ function MM_swapImage() { //v3.0
 	if ($totalRows_rel_songs) {
 	?>
 	<table width="98%" border="0" cellpadding="2" cellspacing="2" class="all_sides">
-	<?php $side = ""; //init af før-side ?>
+	<?php $side = ""; //init af fï¿½r-side ?>
     <?php do { ?>
 		<tr class="track_row">
 		<td class="track_side"><?php if ($row_rel_songs['side'] != $side) { echo $row_rel_songs['side']; }; ?></td>
 		<td class="track_number"><?php echo $row_rel_songs['track']; ?>.</td>
-		<td class="track_title<?php if ($row_rel_songs['hl']) echo " hl"; ?>" id="track_title_<?php echo $r_id ?>_<?php echo $row_rel_songs['track']; ?>"><?php echo $row_rel_songs['title']; ?></td>
+		<td class="track_title<?php if ($row_rel_songs['hl']) echo " hl"; ?>" id="track_title_<?php echo $r_id ?>_<?php echo $row_rel_songs['track']; ?>"><?php 
+        if ((trim($row_rel_songs['alt_title'])) || (trim($row_rel_songs['mix_info']))) {
+            $addinfo = true;
+        } else {
+            $addinfo = false;
+        }	
+        if ($addinfo && !(trim($row_rel_songs['comment']))) {
+            echo "<acronym title=\"";   //begin acro tag
+            if (trim($row_rel_songs['alt_title'])) { echo "aka ".$row_rel_songs['alt_title']; } //alt title
+            if ((trim($row_rel_songs['alt_title'])) && (trim($row_rel_songs['mix_info']))) { echo " - "; }
+            if (trim($row_rel_songs['mix_info'])) { echo "remix by ".$row_rel_songs['mix_info']; } //remixer info
+            echo "\">"; //end ecro tag          
+        } 
+	    echo $row_rel_songs['title']; 
+        if ($addinfo && !(trim($row_rel_songs['comment']))) {
+             echo "</acronym>"; 
+        }
+		?></td>
 		<td class="track_time"><?php if (($row_rel_songs['time'])&&($row_releases['showtime'])) { echo timecalc($row_rel_songs['time']); } ; ?></td>
-		<td class="track_comment"><?php if ($row_releases['reltype'] == "compilation") { echo $row_rel_songs['artist']; } ?> <?php echo $row_rel_songs['comment']; ?></td>
+		<td class="track_comment"><?php if ($row_releases['reltype'] == "compilation") {
+		    echo $row_rel_songs['artist'];
+            if (trim($row_rel_songs['comment'])) {
+                echo " - ";
+            } 
+		} 
+        if ($addinfo && trim($row_rel_songs['comment'])) {
+            echo "<acronym title=\"";   //begin acro tag
+            if (trim($row_rel_songs['alt_title'])) { echo "aka ".$row_rel_songs['alt_title']; } //alt title
+            if ((trim($row_rel_songs['alt_title'])) && (trim($row_rel_songs['mix_info']))) { echo " - "; }
+            if (trim($row_rel_songs['mix_info'])) { echo "remix by ".$row_rel_songs['mix_info']; } //remixer info
+            echo "\">"; //end ecro tag          
+        } 
+        echo $row_rel_songs['comment']; 
+        if ($addinfo && trim($row_rel_songs['comment'])) {
+             echo "</acronym>"; 
+        }
+        ?></td>
 		</tr>
-	<?php $side = $row_rel_songs['side']; //gem oplysninger om side til næste post ?>  
+	<?php $side = $row_rel_songs['side']; //gem oplysninger om side til nï¿½ste post ?>  
 	<?php } while ($row_rel_songs = mysql_fetch_assoc($rel_songs)); ?>
 	</table>
 	<?php 
@@ -284,10 +351,10 @@ function MM_swapImage() { //v3.0
    </table> 
    <?php } ?>
    </div>       
-   <!-- Slut på een release -->
+   <!-- Slut pï¿½ een release -->
    
    <?php
-    $count_pro_out = intval($totalRows_releases) - intval($count_rel);	//tæl antallet af promos
+    $count_pro_out = intval($totalRows_releases) - intval($count_rel);	//tï¿½l antallet af promos
 	if ($count_pro_in || $count_pro_out) {
 		if (isset($_SESSION['exclude_promos']) && ($_SESSION['exclude_promos'])) {
 			$footer_message_switch = " - <a href=\"".$updateGoTo."&amp;pro=1"."\" title=\"Click here to include promos\">excluding ".$count_pro_out." promos</a>";

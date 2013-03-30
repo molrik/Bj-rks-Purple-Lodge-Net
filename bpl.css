@@ -230,3 +230,44 @@ li.none {
 	height: 300px;
 	width: 750px;
 }
+
+/* new release header layout */
+
+.relheader-outer {
+	position: relative;
+	padding-bottom: 5px;
+	height: 87px;
+}
+.relheader-inner {
+	padding-left: 120px; /* skal passe til biledet til venstre, men måtte gerne være dynamisk */
+}
+.bpl_images, .bpl_secondary_images {
+	padding-left: 5px;
+	bottom: 0px;
+}
+.bpl_images {
+	padding-top: 5px;
+	padding-bottom: 5px;
+	float: left;
+	position: absolute;
+	left: 0px;
+}
+.bpl_images .bpl_primary_image {
+	float: left;
+}
+.bpl_morepics_holder {
+	position: absolute;
+	right: -9px;
+	bottom: 5px;
+}
+.bpl_secondary_images {
+	float: left;
+	display:none;
+}
+a.bpl_showmore {
+	background-image: url('syspics/morepics_init.gif');
+}
+a.bpl_showmore:hover {
+	background-image: url('syspics/morepics.gif');
+}
+

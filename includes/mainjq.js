@@ -2,7 +2,8 @@
 
 // jQuery initiering
 jQuery(document).ready(function() {
-
+	
+	//the old version
 	jQuery('.showlink').click(function (event) {
 	  event.preventDefault();
 	  //jQuery(this).fadeOut();
@@ -13,7 +14,14 @@ jQuery(document).ready(function() {
 	  var prid = 'picrow'+aidnum;
 	  //jQuery(this).append('<p>'+tid+'</p>');
 	  jQuery('#'+tid).fadeOut();
-	  jQuery('#'+prid).fadeIn();
+	  jQuery('#'+prid).fadeIn(); 
 	});
+
+	//the new design
+	jQuery('.bpl_showmore').click(function (event) {
+	  event.preventDefault();
+	  jQuery(this).fadeOut();
+	});
+
 
 }); 
