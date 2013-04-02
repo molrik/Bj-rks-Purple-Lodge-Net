@@ -210,6 +210,8 @@ if ($_SESSION['popup_lightbox']) {
 	  
       <div id="div_<?php echo $r_id ?>" class="rel_div">
           
+<!-- *** new design begin *** -->
+          
 <!-- relheader begin --> 
          
 <table width="98%" border="0" cellpadding="0" cellspacing="0" class="sides_and_top relheader-outer"><tr><td valign="top">
@@ -256,7 +258,7 @@ if ($_SESSION['popup_lightbox']) {
   <?php include("includes/images.php"); ?>
   <!-- Billedbehandling er slut her (batchvisning) -->
   </div>
-  <?php if (!$imagecount) { ?>
+  <?php if (!$imagecount && $morepics) { ?>
     <div class="bpl_morepics_holder">
         <a href="#" id="showlink<?php echo $row_releases['id'] ?>" class="bpl_showmore"><img src="syspics/nopoint.gif" alt="morepics.gif" id="morepics<?php echo $row_releases['id'] ?>" title="Click here to show additional images" border="0" height="10" width="9"></a>      
     </div>      
@@ -269,6 +271,8 @@ if ($_SESSION['popup_lightbox']) {
 </td></tr></table>
 
 <!-- relheader end --> 
+
+<!--  *** new design end *** -->
 
 <!-- old morepics row begin -->
  

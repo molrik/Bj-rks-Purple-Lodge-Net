@@ -207,22 +207,17 @@ if ($_SESSION['popup_lightbox']) {
 		?>
 	  <!-- end fetch images  -->
       <div id="div_<?php echo $r_id ?>" class="rel_div">
-	  <table width="98%" border="0" cellpadding="2" cellspacing="2" class="sides_and_top">
-		<tr> 
-    <td width="75" height="75" rowspan="2" align="left" valign="top" id="mainpic<?php echo $row_releases['id']; ?>">
-	<table border="0" cellspacing="0" cellpadding="0">
-	  <tr>
-		<td valign="bottom" class="th_holder">
-			<!-- Billedbehandling starter her (enkeltvisning) -->
-			<?php include("includes/images.php"); ?>
-			<!-- Billedbehandling er slut her (enkeltvisning) -->		</td>
-		<?php if ($morepics) { ?>
-		<td valign="bottom" align="left">
-			<a href='javascript:showallpicsjq(<?php echo $row_releases['id']; ?>);' id="showlink<?php echo $row_releases['id']; ?>" class="showlink"><img src="syspics/morepics_init.gif" alt="morepics.gif" name="morepics<?php echo $row_releases['id']; ?>" width="9" height="10" border="0" id="morepics<?php echo $row_releases['id']; ?>" title="Click here to show additional images" onmouseover="MM_swapImage('morepics<?php echo $row_releases['id']; ?>','','syspics/morepics.gif',1)" onmouseout="MM_swapImgRestore()" /></a>		
-			</td>
-		<?php } ?>
-	  </tr>
-	</table>	</td>
+          
+<!-- *** new design begin *** -->
+
+<!-- relheader begin --> 
+         
+<table width="98%" border="0" cellpadding="0" cellspacing="0" class="sides_and_top relheader-outer"><tr><td valign="top">
+    
+    
+    <table class="relheader-inner" border="0" cellpadding="2" cellspacing="2" width="100%">
+
+        <tr> 
     <td colspan="2"><strong><?php echo $row_releases['title']; ?></strong></td>
     <td colspan="2"> 
       <center>
@@ -230,39 +225,53 @@ if ($_SESSION['popup_lightbox']) {
       </center>    </td>
     <td colspan="2" align="right"> 
       <?php if ($row_releases['reltype'] != "rel") {
-	  	switch($row_releases['reltype']) {
-			case "advance":
-				echo $row_releases['reltype']." copy";
-				break;
-			default:
-				echo $row_releases['reltype'];
-				break;
-		}
-	  } //en switch er nok bedre her ?> 
+        switch($row_releases['reltype']) {
+            case "advance":
+                echo $row_releases['reltype']." copy";
+                break;
+            default:
+                echo $row_releases['reltype'];
+                break;
+        }
+      } //en switch er nok bedre her ?> 
       <?php echo datefix($row_releases['reldate']); ?></td>
   </tr>
   <tr> 
     <td colspan="5"> <ul class="mediainfo">
         <li class="<?php echo showbullet($row_releases['media']); ?>"><?php echo txt2upper($row_releases['media']); ?> - 
             <?php echo $row_releases['label']; ?> <?php echo $row_releases['serial']; ?> (<?php echo $row_releases['country']; ?>) <?php if (trim($row_releases['case'])!="") echo "<span class=\"xxsmall\">".$row_releases['case']."</span>"; ?> <?php if ($row_releases['mo']) { ?><img src="syspics/th_molrik.gif" alt="This item is in my collection" width="22" height="15" title="This item is in my collection" /><?php } ?></li>
-      </ul>	</td>
+      </ul> </td>
 <td align="right" valign="bottom">
 <?php if (isset($_SESSION['user'])) { ?>
 <a href="admin/index_test.php?act=updrel&amp;id=<?php echo $row_releases['id'] ?>"><img src="syspics/pencil.gif" alt="Edit this release" width="16" height="16" border="0" title="Edit this release" /></a>
 <?php } ?></td>  
 </tr>
-</table>  
-<table width="98%" border="0" cellpadding="2" cellspacing="2" class="sides">
-  <?php if ($morepics) { // Show pictures if there are any more ?>
-  <tr id="picrow<?php echo $row_releases['id']; ?>" style="display:none">
-  <td>
-  <?php do { ?>
+</table>
+<div class="bpl_images" id="rel<?php echo $row_releases['id'] ?>_pics">
+ <?php 
+ $imagecount = 0;   //init
+ do { ?>
+  <div class="<?php if ($imagecount) { echo 'bpl_secondary_images'; } else { echo 'bpl_primary_image'; } ?>" id="rel<?php echo $row_releases['id'] ?>_pic<?php echo $imagecount; ?>">   
   <!-- Billedbehandling starter her (batchvisning) -->
   <?php include("includes/images.php"); ?>
   <!-- Billedbehandling er slut her (batchvisning) -->
-  <?php } while ($row_img = mysql_fetch_assoc($img)); ?>  </td></tr>
+  </div>
+  <?php if (!$imagecount && $morepics) { ?>
+    <div class="bpl_morepics_holder">
+        <a href="#" id="showlink<?php echo $row_releases['id'] ?>" class="bpl_showmore"><img src="syspics/nopoint.gif" alt="morepics.gif" id="morepics<?php echo $row_releases['id'] ?>" title="Click here to show additional images" border="0" height="10" width="9"></a>      
+    </div>      
   <?php } ?>
-</table>
+  <?php 
+ $imagecount++;
+ } while ($row_img = mysql_fetch_assoc($img)); ?>
+</div>
+
+</td></tr></table>
+
+<!-- relheader end --> 
+
+<!--  *** new design end *** -->
+
 	<?php
 	//collect the relevant tracks
 	$r_id = $row_releases['id'];	//noter release-id
