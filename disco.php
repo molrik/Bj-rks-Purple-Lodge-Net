@@ -5,6 +5,8 @@ if ($_COOKIE['bplac']) {    //hvis cookies appepteres
         $_SESSION['exclude_promos'] = $_COOKIE['bpl']['exclude_promos'];    //hent promostatus ind i sessionvar
         $_SESSION['popup_lightbox'] = $_COOKIE['bpl']['popup_lightbox'];    //ditto
     }
+} else {    //default er lightbox
+    $_SESSION['popup_lightbox'] = 1;
 }
 /* med eller uden promos */
 if (isset($_GET['pro'])) {
@@ -204,6 +206,9 @@ if ($_SESSION['popup_lightbox']) {
 		$totalRows_img = mysql_num_rows($img);
 		if ($totalRows_img>1) { $morepics=true; } else { $morepics=false; } ;
 		if ($totalRows_img==0) { $row_img['thumb'] = "thx_def.gif"; } ;
+        $imagearray = $row_img; //til extra brug (left-padding på relheader)
+        $sizeoffirstthumb = getimagesize('thumbnails/'.trim($imagearray['thumb']));
+        $relheader_inner_padding_left = intval($sizeoffirstthumb[0]+15); //width
 		?>
 	  <!-- end fetch images  -->
       <div id="div_<?php echo $r_id ?>" class="rel_div">
@@ -215,7 +220,7 @@ if ($_SESSION['popup_lightbox']) {
 <table width="98%" border="0" cellpadding="0" cellspacing="0" class="sides_and_top relheader-outer"><tr><td valign="top">
     
     
-    <table class="relheader-inner" border="0" cellpadding="2" cellspacing="2" width="100%">
+    <table class="relheader-inner" border="0" cellpadding="2" cellspacing="2" width="100%" style="padding-left: <?php echo $relheader_inner_padding_left.'px'; ?>">
 
         <tr> 
     <td colspan="2"><strong><?php echo $row_releases['title']; ?></strong></td>
@@ -258,7 +263,7 @@ if ($_SESSION['popup_lightbox']) {
   </div>
   <?php if (!$imagecount && $morepics) { ?>
     <div class="bpl_morepics_holder">
-        <a href="#" id="showlink<?php echo $row_releases['id'] ?>" class="bpl_showmore"><img src="syspics/nopoint.gif" alt="morepics.gif" id="morepics<?php echo $row_releases['id'] ?>" title="Click here to show additional images" border="0" height="10" width="9"></a>      
+        <a href="#" id="showlink<?php echo $row_releases['id'] ?>" class="bpl_showmore"><img src="syspics/nopoint.gif" alt="morepics.gif" id="morepics<?php echo $row_releases['id'] ?>" title="Click here to reveal all <?php echo $totalRows_img; ?> thumbnails" border="0" height="10" width="9"></a>      
     </div>      
   <?php } ?>
   <?php 

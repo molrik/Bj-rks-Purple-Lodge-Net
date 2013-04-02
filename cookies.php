@@ -8,6 +8,8 @@ if ($_POST['cookie_accept']) {
 }
 if ($_POST['cookie_deny']) {
     setcookie('bplac', 0, time()-3600); //expired one hour ago
+    setcookie('bpl[exclude_promos]', 0, time()-3600); //ditto
+    setcookie('bpl[popup_lightbox]', 0, time()-3600); //ditto  
     header("Location: ".$_SERVER['PHP_SELF']); //redirect to self    
 }
 if ($_POST['status_submit']) { //cookie change
@@ -96,7 +98,7 @@ function MM_swapImage() { //v3.0
         //if (isset($_COOKIE['bpl'])) {   //hvis cookiesettings
         if (1) {
             echo "<br /><div id=\"current_cookie_settings\">";
-            echo "<strong>Current cookie settings:</strong>";
+            echo "<h3>Current cookie settings:</h3>";
             echo "<form id=\"cookie_settings_form\" name=\"cookie_settings_form\" method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">";
             echo "<label for=\"promostatus\">Exclude promos and testpressings</label>";
             echo "<input id=\"promostatus\" name=\"promostatus\" type=\"checkbox\" value=\"1\" ";
@@ -104,13 +106,18 @@ function MM_swapImage() { //v3.0
                 echo "checked=\"checked\" ";
             };
             echo "/>";
-            echo "<br /><label for=\"popupstatus\">Popup images in lightbox</label>";
-            echo "<input id=\"popupstatus\" name=\"popupstatus\" type=\"checkbox\" value=\"1\" ";
+            echo "<table><tr><td rowspan=\"2\"><span>Popup images in: </span></td>";
+            echo "<td><label><input id=\"popupstatus_0\" name=\"popupstatus\" type=\"radio\" value=\"1\" ";
             if ($_COOKIE['bpl']['popup_lightbox']) {
                 echo "checked=\"checked\" ";
             };
-            echo "/>";
-            echo "<br /><input id=\"status_submit\" name=\"status_submit\" type=\"submit\" value=\"Set\" />";
+            echo "/>Lightbox</label></td></tr>";
+            echo "<tr><td><label><input id=\"popupstatus_1\" name=\"popupstatus\" type=\"radio\" value=\"0\" ";
+            if (!$_COOKIE['bpl']['popup_lightbox']) {
+                echo "checked=\"checked\" ";
+            };
+            echo "/>New popup window</label></tr></td></table>";
+            echo "<br /><br /><input id=\"status_submit\" name=\"status_submit\" type=\"submit\" value=\"Set\" />";
             
             echo "</form>";
             echo "</div>";

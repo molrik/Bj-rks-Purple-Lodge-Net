@@ -238,7 +238,7 @@ li.none {
 	height: 87px; /* Hvilehøjde - udvides til 163 ved morepics-aktivering */
 }
 .relheader-inner {
-	padding-left: 120px; /* skal passe til biledet til venstre, men måtte gerne være dynamisk */
+	padding-left: 120px; /* default, skal passe til biledet til venstre, men måtte gerne være dynamisk */
 }
 
 .bpl_images {
