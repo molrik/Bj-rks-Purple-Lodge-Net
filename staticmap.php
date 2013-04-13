@@ -29,7 +29,8 @@
     <td><a href="<?php echo $_SERVER['PHP_SELF'] ?>?title=<?php echo rawurlencode(strtolower('Isobel')); ?>">Isobel</a> (95)</td>
   </tr>
   <tr valign="top"> 
-    <td><a href="<?php echo $_SERVER['PHP_SELF'] ?>?rid=435">It's oh so quiet</a> (95)</td>
+    <!-- <td><a href="<?php echo $_SERVER['PHP_SELF'] ?>?rid=435">It's oh so quiet</a> (95)</td> -->
+    <td><a href="<?php echo $_SERVER['PHP_SELF'] ?>?title=<?php echo rawurlencode(strtolower('It\'s oh so quiet')); ?>">It's oh so quiet</a> (95)</td>
   </tr>
   <tr valign="top"> 
     <td><a href="<?php echo $_SERVER['PHP_SELF'] ?>?title=<?php echo rawurlencode(strtolower('Hyperballad')); ?>">Hyperballad</a> (96) </td>
@@ -42,8 +43,9 @@
     <td><a href="<?php echo $_SERVER['PHP_SELF'] ?>?title=<?php echo rawurlencode(strtolower('I miss you')); ?>">I miss you</a> (97) </td>
   </tr>
   <tr valign="top"> 
-    <td rowspan="5"><a href="<?php echo $_SERVER['PHP_SELF'] ?>?title=<?php echo rawurlencode(strtolower('Homogenic')); ?>">Homogenic</a> (97)</td>
-    <td><a href="<?php echo $_SERVER['PHP_SELF'] ?>?rid=459">J&oacute;ga</a> (97) </td>
+    <td rowspan="5"><a href="<?php echo $_SERVER['PHP_SELF'] ?>?title=<?php echo rawurlencode(strtolower('Homogenic')); ?>">Homogenic</a> (97) </td>
+    <td><a href="<?php echo $_SERVER['PHP_SELF'] ?>?title=<?php echo 'j%F3ga'; ?>">J&oacute;ga</a> (97)</td>
+<!--    <td><a href="<?php echo $_SERVER['PHP_SELF'] ?>?rid=459">J&oacute;ga</a> (97) </td> -->
   </tr>
   <tr valign="top"> 
     <td><a href="<?php echo $_SERVER['PHP_SELF'] ?>?title=<?php echo rawurlencode(strtolower('Bachelorette')); ?>">Bachelorette</a> (97) </td>
@@ -73,7 +75,8 @@
   </tr>
   <tr valign="top"> 
     <td><a href="<?php echo $_SERVER['PHP_SELF'] ?>?title=<?php echo rawurlencode(strtolower('Greatest hits')); ?>">Greatest hits</a> (02)</td>
-    <td><a href="<?php echo $_SERVER['PHP_SELF'] ?>?rid=481">It's in our hands</a> (02)</td>
+<!--    <td><a href="<?php echo $_SERVER['PHP_SELF'] ?>?rid=481">It's in our hands</a> (02)</td> -->
+    <td><a href="<?php echo $_SERVER['PHP_SELF'] ?>?title=<?php echo rawurlencode(strtolower('It\'s in our hands')); ?>">It's in our hands</a> (02)</td>
   </tr>
   <tr valign="top"> 
     <td><a href="<?php echo $_SERVER['PHP_SELF'] ?>?title=<?php echo rawurlencode(strtolower('Family tree')); ?>">Family tree</a> (02)</td>
@@ -124,7 +127,7 @@
 </tr>
 <tr>	
     <td valign="top"><a href="<?php echo $_SERVER['PHP_SELF'] ?>?title=<?php echo rawurlencode(strtolower('Bastards')); ?>">Bastards</a> (12)</td>
-    <td valign="top"><a href="<?php echo $_SERVER['PHP_SELF'] ?>?title=<?php echo rawurlencode(strtolower('Biophilia remix series 1')); ?>">Biophilia remixes</a> (12)</td>
+    <td valign="top"><a href="<?php echo $_SERVER['PHP_SELF'] ?>?titles=<?php echo rawurlencode(strtolower('Biophilia remix series')); ?>">Biophilia remixes</a> (12)</td>
 </tr>
   
   <tr valign="top"> 
@@ -185,7 +188,7 @@
     <td><a href="<?php echo $_SERVER['PHP_SELF'] ?>?title=vitamin">Vitamin</a> (92)</td>
   </tr>
   <tr valign="top"> 
-    <td valign="top"><a href="<?php echo $_SERVER['PHP_SELF'] ?>?title=it's-it">It's-it</a> (92)</td>
+    <td valign="top"><a href="<?php echo $_SERVER['PHP_SELF'] ?>?title=<?php echo rawurlencode(strtolower('It\'s-it')) ?>">It's-it</a> (92)</td>
     <td><a href="<?php echo $_SERVER['PHP_SELF'] ?>?title=leash%20called%20love">Leash called love</a> (92)</td>
   </tr>
   <tr valign="top"> 

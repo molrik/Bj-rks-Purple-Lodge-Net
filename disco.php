@@ -62,7 +62,7 @@ $updateGoTo .= $_SERVER['QUERY_STRING'];
 }
 
 /* Valg af udv�lgelsesmetode og databaseconnections */
-if (!isset($_GET['year']) && !isset($_GET['letter']) && !isset($_GET['rid']) && !isset($_GET['title']) && !isset($_GET['artist'])) {
+if (!isset($_GET['year']) && !isset($_GET['letter']) && !isset($_GET['rid']) && !isset($_GET['title']) && !isset($_GET['titles']) && !isset($_GET['artist'])) {
 	$selrel = "1=0"; 
 	$footer_message = "";
 	$seltyp = "none";
@@ -79,6 +79,10 @@ if (isset($_GET['letter']))	{
 if (isset($_GET['title'])) { 
 	$selrel = "title LIKE '".addslashes($_GET['title'])."'";  //selecting title
 	$seltyp = "title";
+}
+if (isset($_GET['titles'])) { 
+    $selrel = "title LIKE '".addslashes($_GET['titles'])."%'";  //selecting titles
+    $seltyp = "titles";
 }
 if (isset($_GET['rid'])) { 
 	$selrel = "id=".$_GET['rid'];  //selecting by id
@@ -306,8 +310,18 @@ if ($_SESSION['popup_lightbox']) {
             if ((trim($row_rel_songs['alt_title'])) && (trim($row_rel_songs['mix_info']))) { echo " - "; }
             if (trim($row_rel_songs['mix_info'])) { echo "remix by ".$row_rel_songs['mix_info']; } //remixer info
             echo "\">"; //end ecro tag          
-        } 
-	    echo $row_rel_songs['title']; 
+        }
+        //which list do we link to?
+        $groupz = array('Kukl','Sugarcubes','Sykurmolarnir','Johnny Triumph and the Sugarcubes');
+        $tappis = array(20, 21);    //Tappi Tíkakkass
+        if ((in_array(trim($row_releases['artist']), $groupz)) || (in_array(intval($r_id), $tappis))) {
+            $target = 'sugar';
+        } else { 
+            $target = 'alone';
+        }
+        //link to song-list
+	    echo '<a href='.$target.'.php?letter='.rawurlencode(strtolower($row_rel_songs['title'])).'>'.$row_rel_songs['title'].'</a>'; 
+        
         if ($addinfo && !(trim($row_rel_songs['comment']))) {
              echo "</acronym>"; 
         }
@@ -373,6 +387,9 @@ if ($_SESSION['popup_lightbox']) {
 		case "title":
 			$footer_message = "Showing <acronym title=\"".$count_rel."\">all</acronym> releases named <b>".stripslashes(trim($_GET['title']))."</b>".$footer_message_switch;
 			break;
+        case "titles":
+            $footer_message = "Showing <acronym title=\"".$count_rel."\">all</acronym> releases beginning with <b>".stripslashes(trim($_GET['titles']))."</b>".$footer_message_switch;
+            break;
 		case "artist";
 			$footer_message = "Showing <acronym title=\"".$count_rel."\">all</acronym> releases by <b>".stripslashes(trim($_GET['artist']))."</b>".$footer_message_switch;	
 			break;
