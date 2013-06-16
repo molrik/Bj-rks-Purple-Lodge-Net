@@ -1,0 +1,10 @@
+.leftcol {
+	display:none;
+}
+body {
+	background-image: none;
+}
+.bpl_primary_image img, .bpl_secondary_images img {
+	width: 50px;
+	height: auto;
+}

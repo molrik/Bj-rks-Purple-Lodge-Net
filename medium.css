@@ -1,0 +1,18 @@
+.leftcol {
+	width: 100px;
+}
+.leftcol img {
+	width: 93%;
+	height: auto;
+}
+body {
+	background-image: none;
+}
+#leftcorner {
+	background-position: right;
+}
+#leftmenu {
+	background-position: right;
+	background-image: url(syspics/left2.jpg);
+	background-repeat: repeat-y;
+}

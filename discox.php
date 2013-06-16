@@ -5,6 +5,8 @@ if ($_COOKIE['bplac']) {    //hvis cookies appepteres
         $_SESSION['exclude_promos'] = $_COOKIE['bpl']['exclude_promos'];    //hent promostatus ind i sessionvar
         $_SESSION['popup_lightbox'] = $_COOKIE['bpl']['popup_lightbox'];    //ditto
     }
+} else {    //default er lightbox
+    $_SESSION['popup_lightbox'] = 1;
 }
 /* med eller uden promos */
 if (isset($_GET['pro'])) {
@@ -60,7 +62,7 @@ $updateGoTo .= $_SERVER['QUERY_STRING'];
 }
 
 /* Valg af udv�lgelsesmetode og databaseconnections */
-if (!isset($_GET['year']) && !isset($_GET['letter']) && !isset($_GET['rid']) && !isset($_GET['title']) && !isset($_GET['artist'])) {
+if (!isset($_GET['year']) && !isset($_GET['letter']) && !isset($_GET['rid']) && !isset($_GET['title']) && !isset($_GET['titles']) && !isset($_GET['artist'])) {
 	$selrel = "1=0"; 
 	$footer_message = "";
 	$seltyp = "none";
@@ -77,6 +79,10 @@ if (isset($_GET['letter']))	{
 if (isset($_GET['title'])) { 
 	$selrel = "title LIKE '".addslashes($_GET['title'])."'";  //selecting title
 	$seltyp = "title";
+}
+if (isset($_GET['titles'])) { 
+    $selrel = "title LIKE '".addslashes($_GET['titles'])."%'";  //selecting titles
+    $seltyp = "titles";
 }
 if (isset($_GET['rid'])) { 
 	$selrel = "id=".$_GET['rid'];  //selecting by id
@@ -117,7 +123,7 @@ $totalRows_relletter = mysql_num_rows($relletter);
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<title>Bj&ouml;rks Purple Lodge - Discography</title>
+<title>Bj&ouml;rks Purple Lodge - Discography (test)</title>
 <!-- Dreamweaver-genererede javascripts - mine egne henvises der til i menu.inc.php -->
 <script type="text/JavaScript">
 <!--
@@ -154,16 +160,23 @@ if ($_SESSION['popup_lightbox']) {
 <?php    
 }
 ?>
+<link rel='stylesheet' type='text/css' id='size-stylesheet' href='medium.css' />
+<!-- 
+<link rel='stylesheet' type='text/css' media='screen and (max-width: 700px)' href='narrow.css' />
+<link rel='stylesheet' type='text/css' media='screen and (min-width: 701px) and (max-width: 900px)' href='medium.css' />
+<link rel='stylesheet' type='text/css' media='screen and (min-width: 901px)' href='wide.css' /> 
+-->
+<meta content="width=device-width; initial-scale=1.0; maximum-scale=1.0;" name="viewport">
 </head>
 
 <body onload="MM_preloadImages('molrik.gif','taatoo.gif','umurna2.gif','cubes.gif','bjorkb.gif','eye8.gif','bear.gif','morepics.gif')">
 <table width="100%" border="0" cellspacing="0" cellpadding="0" style="height:100%">
   <tr id="header_row">
-    <td width="150" height="150" align="center" valign="middle" id="leftcorner"><img src="syspics/eye8.gif" alt="Corner" name="corner" width="140" height="140" border="0" id="corner" /></td>
+    <td height="150" align="center" valign="middle" id="leftcorner" class="leftcol"><img src="syspics/eye8.gif" alt="Corner" name="corner" width="140" height="140" border="0" id="corner" /></td>
 	
     <td height="150" align="center" valign="middle" id="topmenu">
     <a name="sidetop"></a>
-	<h3><a href="<?php echo $_SERVER['PHP_SELF']; ?>">Discography test</a></h3>
+	<h3><a href="<?php echo $_SERVER['PHP_SELF']; ?>">Discography (test)</a></h3>
 	<table><tr><td id="year_row">
 		<!-- Her fremvises alle forekommende �rstal med links -->
       	<?php do { ?>
@@ -178,9 +191,9 @@ if ($_SESSION['popup_lightbox']) {
 	</td></tr></table>	</td>
   </tr>
   <tr>
-    <td width="150" align="center" valign="top">
+    <td align="center" valign="top" class="leftcol" id="leftmenu">
 	<!-- Her kommer hovedmenuen - indeholder desuden faste php- og javascript-includes -->
-	<?php include("menu.inc.php"); ?>	</td>
+	<?php include("menux.inc.php"); ?>	</td>
     <td align="left" valign="top">
 	<!-- Her start hovedindholdet -->
     <?php 
@@ -189,7 +202,6 @@ if ($_SESSION['popup_lightbox']) {
 	?>
 	<?php if ($totalRows_releases) { //only if releases found ?>
       <?php do { //once pr found release ?>
-          
       <!-- promos / no promos -->
       <?php if (!(($row_releases['reltype'] != "rel") && ($_SESSION['exclude_promos']))) { ?>
       <?php 
@@ -205,21 +217,23 @@ if ($_SESSION['popup_lightbox']) {
 		$totalRows_img = mysql_num_rows($img);
 		if ($totalRows_img>1) { $morepics=true; } else { $morepics=false; } ;
 		if ($totalRows_img==0) { $row_img['thumb'] = "thx_def.gif"; } ;
+        $imagearray = $row_img; //til extra brug (left-padding på relheader)
+        $sizeoffirstthumb = getimagesize('thumbnails/'.trim($imagearray['thumb']));
+        $relheader_inner_padding_left = intval($sizeoffirstthumb[0]+15); //width
 		?>
 	  <!-- end fetch images  -->
-	  
       <div id="div_<?php echo $r_id ?>" class="rel_div">
           
 <!-- *** new design begin *** -->
-          
+
 <!-- relheader begin --> 
          
 <table width="98%" border="0" cellpadding="0" cellspacing="0" class="sides_and_top relheader-outer"><tr><td valign="top">
     
     
-    <table class="relheader-inner" border="0" cellpadding="2" cellspacing="2" width="100%">
+    <table class="relheader-inner" border="0" cellpadding="2" cellspacing="2" width="100%" style="padding-left: <?php echo $relheader_inner_padding_left.'px'; ?>">
 
-		<tr> 
+        <tr> 
     <td colspan="2"><strong><?php echo $row_releases['title']; ?></strong></td>
     <td colspan="2"> 
       <center>
@@ -227,22 +241,22 @@ if ($_SESSION['popup_lightbox']) {
       </center>    </td>
     <td colspan="2" align="right"> 
       <?php if ($row_releases['reltype'] != "rel") {
-	  	switch($row_releases['reltype']) {
-			case "advance":
-				echo $row_releases['reltype']." copy";
-				break;
-			default:
-				echo $row_releases['reltype'];
-				break;
-		}
-	  } //en switch er nok bedre her ?> 
+        switch($row_releases['reltype']) {
+            case "advance":
+                echo $row_releases['reltype']." copy";
+                break;
+            default:
+                echo $row_releases['reltype'];
+                break;
+        }
+      } //en switch er nok bedre her ?> 
       <?php echo datefix($row_releases['reldate']); ?></td>
   </tr>
   <tr> 
     <td colspan="5"> <ul class="mediainfo">
         <li class="<?php echo showbullet($row_releases['media']); ?>"><?php echo txt2upper($row_releases['media']); ?> - 
             <?php echo $row_releases['label']; ?> <?php echo $row_releases['serial']; ?> (<?php echo $row_releases['country']; ?>) <?php if (trim($row_releases['case'])!="") echo "<span class=\"xxsmall\">".$row_releases['case']."</span>"; ?> <?php if ($row_releases['mo']) { ?><img src="syspics/th_molrik.gif" alt="This item is in my collection" width="22" height="15" title="This item is in my collection" /><?php } ?></li>
-      </ul>	</td>
+      </ul> </td>
 <td align="right" valign="bottom">
 <?php if (isset($_SESSION['user'])) { ?>
 <a href="admin/index_test.php?act=updrel&amp;id=<?php echo $row_releases['id'] ?>"><img src="syspics/pencil.gif" alt="Edit this release" width="16" height="16" border="0" title="Edit this release" /></a>
@@ -260,7 +274,7 @@ if ($_SESSION['popup_lightbox']) {
   </div>
   <?php if (!$imagecount && $morepics) { ?>
     <div class="bpl_morepics_holder">
-        <a href="#" id="showlink<?php echo $row_releases['id'] ?>" class="bpl_showmore"><img src="syspics/nopoint.gif" alt="morepics.gif" id="morepics<?php echo $row_releases['id'] ?>" title="Click here to show additional images" border="0" height="10" width="9"></a>      
+        <a href="#" id="showlink<?php echo $row_releases['id'] ?>" class="bpl_showmore"><img src="syspics/nopoint.gif" alt="morepics.gif" id="morepics<?php echo $row_releases['id'] ?>" title="Click here to reveal all <?php echo $totalRows_img; ?> thumbnails" border="0" height="10" width="9"></a>      
     </div>      
   <?php } ?>
   <?php 
@@ -273,17 +287,6 @@ if ($_SESSION['popup_lightbox']) {
 <!-- relheader end --> 
 
 <!--  *** new design end *** -->
-
-<!-- old morepics row begin -->
- 
-<table width="98%" border="0" cellpadding="2" cellspacing="2" class="sides">
-  <?php if ($morepics) { // Show pictures if there are any more ?>
-  <tr id="picrow<?php echo $row_releases['id']; ?>" style="display:none">
-  <td>the old row  </td></tr>
-  <?php } ?>
-</table>
-
-<!-- old morepics row end -->
 
 	<?php
 	//collect the relevant tracks
@@ -314,8 +317,18 @@ if ($_SESSION['popup_lightbox']) {
             if ((trim($row_rel_songs['alt_title'])) && (trim($row_rel_songs['mix_info']))) { echo " - "; }
             if (trim($row_rel_songs['mix_info'])) { echo "remix by ".$row_rel_songs['mix_info']; } //remixer info
             echo "\">"; //end ecro tag          
-        } 
-	    echo $row_rel_songs['title']; 
+        }
+        //which list do we link to?
+        $groupz = array('Kukl','Sugarcubes','Sykurmolarnir','Johnny Triumph and the Sugarcubes');
+        $tappis = array(20, 21);    //Tappi Tíkakkass
+        if ((in_array(trim($row_releases['artist']), $groupz)) || (in_array(intval($r_id), $tappis))) {
+            $target = 'sugar';
+        } else { 
+            $target = 'alone';
+        }
+        //link to song-list
+	    echo '<a href='.$target.'.php?letter='.rawurlencode(strtolower($row_rel_songs['title'])).'>'.$row_rel_songs['title'].'</a>'; 
+        
         if ($addinfo && !(trim($row_rel_songs['comment']))) {
              echo "</acronym>"; 
         }
@@ -381,6 +394,9 @@ if ($_SESSION['popup_lightbox']) {
 		case "title":
 			$footer_message = "Showing <acronym title=\"".$count_rel."\">all</acronym> releases named <b>".stripslashes(trim($_GET['title']))."</b>".$footer_message_switch;
 			break;
+        case "titles":
+            $footer_message = "Showing <acronym title=\"".$count_rel."\">all</acronym> releases beginning with <b>".stripslashes(trim($_GET['titles']))."</b>".$footer_message_switch;
+            break;
 		case "artist";
 			$footer_message = "Showing <acronym title=\"".$count_rel."\">all</acronym> releases by <b>".stripslashes(trim($_GET['artist']))."</b>".$footer_message_switch;	
 			break;
