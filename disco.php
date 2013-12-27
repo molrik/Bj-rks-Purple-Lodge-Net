@@ -320,7 +320,7 @@ if ($_SESSION['popup_lightbox']) {
             $target = 'alone';
         }
         //link to song-list
-	    echo '<a href='.$target.'.php?letter='.rawurlencode(strtolower($row_rel_songs['title'])).'>'.$row_rel_songs['title'].'</a>'; 
+	    echo '<a href='.$target.'.php?letter='.rawurlencode(strtolower(addslashes($row_rel_songs['title']))).'>'.$row_rel_songs['title'].'</a>'; 
         
         if ($addinfo && !(trim($row_rel_songs['comment']))) {
              echo "</acronym>"; 
