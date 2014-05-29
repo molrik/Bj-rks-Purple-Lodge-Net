@@ -156,6 +156,12 @@ a:hover {
 	width: 400px;
 	vertical-align: top;
 }
+.track_title a {
+	color: #550055;
+}
+.track_title.hl a {
+	color: #9900CC;
+}
 .track_time {
 	width: 50px;
 	text-align: right;
